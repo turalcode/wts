@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root,
+body {
+    height: 100%;
+}
+body {
+    font-size: calc(0.6vw + 0.6vh);
+}
+#root {
+    height: 100%;
+    min-width: 1920px;
+}
+th {
+    font-weight: initial;
+}
+sup {
+    top: -1em;
+}
+a,
+button {
+    transition: opacity 0.1s linear;
+}
+a:hover,
+button:hover {
+    opacity: 0.5;
+}
