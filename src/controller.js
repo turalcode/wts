@@ -1,51 +1,64 @@
-import {addDoc, collection, doc, getDocs, updateDoc} from "firebase/firestore";
+import {
+    addDoc,
+    collection,
+    doc,
+    getDocs,
+    query,
+    updateDoc,
+    where
+} from "firebase/firestore";
 import db from "./firebase";
+import {useNetwork} from "./hooks/useNetwork";
 
 const controller = {
-    getEmployees: async () => {
-        const employees = await getDocs(collection(db, "employees"));
-        return employees.docs.map((doc) => ({
+    getEmployees: async (isAuth) => {
+        if (!useNetwork()) return;
+
+        let q = null;
+
+        if (!isAuth) {
+            q = query(
+                collection(db, "employees"),
+                where("isDismissed", "==", false)
+            );
+        } else {
+            q = query(collection(db, "employees"));
+        }
+
+        const employees = await getDocs(q);
+        const result = employees.docs.map((doc) => ({
             ...doc.data(),
             id: doc.id
         }));
+
+        if (isAuth) {
+            return result.sort((a, b) => +a.isDismissed - +b.isDismissed);
+        } else {
+            return result;
+        }
     },
     setEmployee: async (employee) => {
+        if (!useNetwork()) return;
+
         const doc = await addDoc(collection(db, "employees"), employee);
         return doc.id;
     },
-    setWorkingMonth: function (date, employees) {
-        const month = date.daysInMonth();
-        const key = date.key();
+    updateEmployeeWorkingDay: (id, employee) => {
+        if (!useNetwork()) return;
 
-        employees.forEach(async (employee) => {
-            if (!(key in employee.dates)) {
-                const employeeRef = doc(db, "employees", employee.id);
-
-                updateDoc(employeeRef, {
-                    dates: {
-                        ...employee.dates,
-                        [key]: month
-                    }
-                });
+        const employeeRef = doc(db, "employees", id);
+        updateDoc(employeeRef, {
+            dates: {
+                ...employee.dates
             }
         });
     },
-    updateEmployeWorkingDay: async (employees, key, id, day, hours) => {
-        const employee = employees.find((employee) => employee.id === id);
-        const month = employee.dates[key];
-        const employeeRef = doc(db, "employees", id);
+    updateEmployeeIsDismissing: (id, isDismissed) => {
+        if (!useNetwork()) return;
 
-        await updateDoc(employeeRef, {
-            dates: {
-                [key]: {
-                    ...month,
-                    [day.number]: {
-                        ...day,
-                        isWorked: hours > 0,
-                        hoursWorkedPerDay: hours
-                    }
-                }
-            }
+        const employeeRef = doc(db, "employees", id);
+        updateDoc(employeeRef, {
+            isDismissed: isDismissed
         });
     }
 };

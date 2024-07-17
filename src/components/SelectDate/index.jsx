@@ -4,12 +4,10 @@ import Select from "../UI/Select";
 import {useDispatch, useSelector} from "react-redux";
 import {setDate} from "../../store/dateSlice";
 import {setWorkingMonth} from "../../store/employeesSlice";
-import {Calendar} from "../Icons";
-import controller from "../../controller";
+import {CalendarIcon} from "../Icons";
 
 const SelectDate = () => {
     const date = useSelector((state) => state.date.date);
-    const employees = useSelector((state) => state.employees.employees);
     const dispatch = useDispatch();
     const [year, setYear] = useState(date.getFullYear());
     const [month, setMonth] = useState(date.getMonth());
@@ -19,7 +17,6 @@ const SelectDate = () => {
         const date = new Date(e.target.value, month);
         dispatch(setDate({date}));
         dispatch(setWorkingMonth({date}));
-        controller.setWorkingMonth(date, employees);
     }
 
     function selectMonthHandler(e) {
@@ -27,13 +24,12 @@ const SelectDate = () => {
         const date = new Date(year, e.target.value);
         dispatch(setDate({date}));
         dispatch(setWorkingMonth({date}));
-        controller.setWorkingMonth(date, employees);
     }
 
     return (
         <div className="pl-4 flex items-center">
             <div>
-                <Calendar />
+                <CalendarIcon />
             </div>
 
             <div className="ml-2">

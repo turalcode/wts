@@ -1,6 +1,13 @@
 import Day from "../Day";
 
-const DaysMonth = ({month, employeeId, clickHandler}) => {
+const DaysMonth = ({
+    month,
+    employeeId,
+    employeeName,
+    employeeIsDismissed,
+    setWorkingDayHandler,
+    isAuth
+}) => {
     return (
         <>
             {month.days.map((day) => (
@@ -8,7 +15,10 @@ const DaysMonth = ({month, employeeId, clickHandler}) => {
                     key={day}
                     day={month[day]}
                     employeeId={employeeId}
-                    clickHandler={clickHandler}
+                    employeeName={employeeName}
+                    employeeIsDismissed={employeeIsDismissed}
+                    setWorkingDayHandler={setWorkingDayHandler}
+                    isAuth={isAuth}
                 />
             ))}
         </>

@@ -1,4 +1,5 @@
 import {createSlice} from "@reduxjs/toolkit";
+import controller from "../controller";
 
 const employeesSlice = createSlice({
     name: "employees",
@@ -7,16 +8,10 @@ const employeesSlice = createSlice({
     },
     reducers: {
         initEmployees(state, action) {
-            state.employees = action.payload.employees;
-        },
-        setEmployee(state, action) {
-            state.employees.push(action.payload.employee);
-        },
-        setWorkingMonth(state, action) {
             const date = action.payload.date;
-            const key = action.payload.date.key();
+            const key = date.key();
 
-            state.employees.map((employee) => {
+            state.employees = action.payload.employees.map((employee) => {
                 if (key in employee.dates) {
                     return employee;
                 }
@@ -25,42 +20,75 @@ const employeesSlice = createSlice({
                 return employee;
             });
         },
-        setHoursWorkedPerDay(state, action) {
+        setEmployee: (state, action) => {
+            state.employees.push(action.payload.employee);
+        },
+        setWorkingMonth(state, action) {
+            const date = action.payload.date;
+            const key = action.payload.date.key();
+            const month = date.daysInMonth();
+
+            state.employees.map((employee) => {
+                if (key in employee.dates) {
+                    return employee;
+                }
+
+                employee.dates[key] = month;
+                return employee;
+            });
+        },
+        setWorkingDay(state, action) {
             const employeeId = action.payload.id;
             const key = action.payload.key;
             const number = action.payload.number;
             const hours = action.payload.hours;
-
+            const overtimeRatio = action.payload.overtimeRatio;
+            const workShift = action.payload.workShift;
             const employee = state.employees.find(
                 (employee) => employee.id === employeeId
             );
 
+            // Запись отработанных часов за день
             const day = employee.dates[key][number];
-            day.hoursWorkedPerDay = hours;
             day.isWorked = hours > 0;
-        },
-        setHoursWorkedPerMonth(state, action) {
-            const employee = state.employees.find(
-                (employee) => employee.id === action.payload.id
-            );
+            day.hoursWorkedPerDay = hours;
+            day.overtimeRatio = overtimeRatio;
+            day.workShift = workShift;
+            day.overtimeWork =
+                day.hoursWorkedPerDay > day.workShift
+                    ? day.hoursWorkedPerDay - day.workShift
+                    : 0;
 
-            let month = employee.dates[action.payload.key];
-
+            // Запись отработанных часов за месяц
+            const month = employee.dates[key];
             month.hoursWorkedPerMonth = month.days.reduce(
                 (acc, day) => acc + month[day].hoursWorkedPerDay,
                 0
             );
-        },
-        setDaysWorkedPerMonth(state, action) {
-            const employee = state.employees.find(
-                (employee) => employee.id === action.payload.id
-            );
 
-            let month = employee.dates[action.payload.key];
-
+            // Запись отработанных дней за месяц
             month.daysWorkedPerMonth = month.days.filter(
                 (day) => month[day].isWorked
             ).length;
+
+            // Запись в БД
+            controller.updateEmployeeWorkingDay(
+                employeeId,
+                employee,
+                key,
+                month
+            );
+        },
+        toggleIsDismissed(state, action) {
+            const employee = state.employees.find(
+                (employee) => employee.id === action.payload.id
+            );
+            employee.isDismissed = action.payload.isDismissed;
+            state.employees.sort((a, b) => +a.isDismissed - +b.isDismissed);
+            controller.updateEmployeeIsDismissing(
+                action.payload.id,
+                action.payload.isDismissed
+            );
         }
     }
 });
@@ -69,8 +97,7 @@ export const {
     initEmployees,
     setEmployee,
     setWorkingMonth,
-    setHoursWorkedPerDay,
-    setHoursWorkedPerMonth,
-    setDaysWorkedPerMonth
+    setWorkingDay,
+    toggleIsDismissed
 } = employeesSlice.actions;
 export default employeesSlice.reducer;

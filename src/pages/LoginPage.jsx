@@ -2,7 +2,7 @@ import React, {useEffect} from "react";
 import {getAuth, signInWithEmailAndPassword} from "firebase/auth";
 import {useDispatch} from "react-redux";
 import {useNavigate} from "react-router-dom";
-import {addUser} from "../store/userSlice";
+import {setUser} from "../store/userSlice";
 import Form from "../components/Form";
 import {useAuth} from "../hooks/useAuth";
 
@@ -12,29 +12,40 @@ const LoginPage = () => {
     const {isAuth} = useAuth();
 
     useEffect(() => {
-        if (isAuth) return navigate("/");
+        if (isAuth) return navigate("/wts");
     }, []);
 
-    const loginHandler = (email, password) => {
+    function loginHandler(email, password, isSave) {
         const auth = getAuth();
 
         signInWithEmailAndPassword(auth, email, password)
             .then(({user}) => {
                 dispatch(
-                    addUser({
+                    setUser({
                         id: user.uid,
                         email: user.email,
                         token: user.accessToken
                     })
                 );
-                return navigate("/");
+
+                if (window.localStorage) {
+                    if (isSave) {
+                        localStorage.setItem("wts-email", email);
+                        localStorage.setItem("wts-password", password);
+                    } else {
+                        localStorage.removeItem("wts-email");
+                        localStorage.removeItem("wts-password");
+                    }
+                }
+
+                return navigate("/wts");
             })
-            .catch(() => alert("Неверный email или пароль!"));
-    };
+            .catch(() => alert("Что-то пошло не так..."));
+    }
 
     return (
         <div className="mx-auto mt-56 max-w-xl">
-            <Form callback={loginHandler} />
+            <Form loginHandler={loginHandler} />
         </div>
     );
 };

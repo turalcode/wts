@@ -1,17 +1,30 @@
-import {useAuth} from "../../hooks/useAuth";
-
-const Day = ({day, employeeId, clickHandler}) => {
-    const {isAuth} = useAuth();
-
+const Day = ({
+    day,
+    employeeId,
+    employeeName,
+    employeeIsDismissed,
+    setWorkingDayHandler,
+    isAuth
+}) => {
     return (
         <>
             {isAuth ? (
                 <td
-                    onClick={() => clickHandler(day, employeeId)}
+                    onClick={() =>
+                        !employeeIsDismissed &&
+                        setWorkingDayHandler(day, employeeId, employeeName)
+                    }
                     className={
                         day.isWorked
                             ? "cursor-pointer border border-slate-300 bg-green-100 text-inherit"
                             : "cursor-pointer border border-slate-300 text-slate-300"
+                    }
+                    title={
+                        day.isWorked
+                            ? `Коэффициент сверхурочного времени: ${
+                                  day.overtimeRatio || 1.25
+                              }`
+                            : null
                     }
                 >
                     {day.hoursWorkedPerDay}
@@ -20,8 +33,15 @@ const Day = ({day, employeeId, clickHandler}) => {
                 <td
                     className={
                         day.isWorked
-                            ? "cursor-pointer border border-slate-300 bg-green-100 text-inherit"
-                            : "cursor-pointer border border-slate-300 text-slate-300"
+                            ? "border border-slate-300 bg-green-100 text-inherit"
+                            : "border border-slate-300 text-slate-300"
+                    }
+                    title={
+                        day.isWorked
+                            ? `Коэффициент сверхурочного времени: ${
+                                  day.overtimeRatio || 1.25
+                              }`
+                            : null
                     }
                 >
                     {day.hoursWorkedPerDay}

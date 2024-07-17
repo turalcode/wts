@@ -5,7 +5,7 @@ import Employees from "../components/Employees";
 import InputEmployee from "../components/InputEmployee";
 import {useAuth} from "../hooks/useAuth";
 import controller from "../controller";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {initEmployees} from "../store/employeesSlice";
 import {useNetwork} from "../hooks/useNetwork";
 import Loading from "../components/Loading";
@@ -13,17 +13,22 @@ import Loading from "../components/Loading";
 const HomePage = () => {
     useNetwork();
     const {isAuth} = useAuth();
+    const date = useSelector((state) => state.date.date);
     const dispatch = useDispatch();
     const [isLoading, setIsLoading] = useState(true);
 
+    function isLoadingToggle() {
+        setIsLoading((isLoading) => (isLoading = !isLoading));
+    }
+
     async function getEmployees() {
         try {
-            const employees = await controller.getEmployees();
-            dispatch(initEmployees({employees}));
+            const employees = await controller.getEmployees(isAuth);
+            dispatch(initEmployees({employees, date}));
         } catch (err) {
             console.error(err);
         } finally {
-            setIsLoading(false);
+            isLoadingToggle();
         }
     }
 
@@ -33,7 +38,7 @@ const HomePage = () => {
 
     return (
         <>
-            {isAuth && <InputEmployee />}
+            {isAuth && <InputEmployee isLoadingToggle={isLoadingToggle} />}
 
             {isLoading ? (
                 <Loading />

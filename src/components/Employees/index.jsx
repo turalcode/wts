@@ -1,12 +1,9 @@
 import {useDispatch, useSelector} from "react-redux";
-import DaysMonth from "../DaysMonth";
-import {
-    setDaysWorkedPerMonth,
-    setHoursWorkedPerDay,
-    setHoursWorkedPerMonth
-} from "../../store/employeesSlice";
-import controller from "../../controller";
+import {toggleIsDismissed} from "../../store/employeesSlice";
+import Employee from "../Employee";
 import {useNetwork} from "../../hooks/useNetwork";
+import {toggleIsOpen} from "../../store/modalSlice";
+import {setDayForEditing} from "../../store/dayForEditingSlice";
 
 const Employees = () => {
     const employees = useSelector((state) => state.employees.employees);
@@ -14,65 +11,37 @@ const Employees = () => {
     const key = date.key();
     const dispatch = useDispatch();
 
-    async function clickHandler(day, employeeId) {
-        useNetwork();
+    const setWorkingDayHandler = (day, employeeId, employeeName) => {
+        if (!useNetwork()) return;
 
-        let hours = window.prompt(
-            "Введите количество отработанных часов за день:",
-            day.hours
-        );
+        dispatch(setDayForEditing({day, employeeId, employeeName}));
+        dispatch(toggleIsOpen({isOpen: true}));
+    };
 
-        if (
-            +hours === day.hoursWorkedPerDay ||
-            !hours ||
-            !Number.isInteger(+hours) ||
-            +hours > 24 ||
-            +hours < 0
-        ) {
-            return;
-        }
-
-        hours = +hours;
+    const toggleIsDismissedHandler = (employeeId, isDismissed) => {
+        if (!useNetwork()) return;
 
         dispatch(
-            setHoursWorkedPerDay({
+            toggleIsDismissed({
                 id: employeeId,
-                key,
-                number: day.number,
-                hours
+                isDismissed
             })
         );
-        dispatch(setHoursWorkedPerMonth({id: employeeId, key}));
-        dispatch(setDaysWorkedPerMonth({id: employeeId, key}));
-        await controller.updateEmployeWorkingDay(
-            employees,
-            key,
-            employeeId,
-            day,
-            hours
-        );
-    }
+    };
 
     return (
         <>
             {employees.map((employee) => (
-                <tr key={employee.id}>
-                    <td className="border border-slate-300 bg-slate-100">
-                        {employee.name}
-                    </td>
-
-                    <DaysMonth
-                        month={employee.dates[key]}
-                        employeeId={employee.id}
-                        clickHandler={clickHandler}
+                <tr
+                    className={employee.isDismissed ? "opacity-25" : null}
+                    key={employee.id}
+                >
+                    <Employee
+                        dateKey={key}
+                        employee={employee}
+                        toggleIsDismissedHandler={toggleIsDismissedHandler}
+                        setWorkingDayHandler={setWorkingDayHandler}
                     />
-
-                    <td className="border border-slate-300 bg-slate-100 leading-tight">
-                        <p>{employee.dates[key].daysWorkedPerMonth}</p>
-                    </td>
-                    <td className="border border-slate-300 bg-slate-100 leading-tight">
-                        <p>{employee.dates[key].hoursWorkedPerMonth}</p>
-                    </td>
                 </tr>
             ))}
         </>

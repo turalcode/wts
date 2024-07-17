@@ -3,18 +3,18 @@ import {useDispatch, useSelector} from "react-redux";
 import controller from "../../controller";
 import {setEmployee} from "../../store/employeesSlice";
 
-const InputEmployee = () => {
+const InputEmployee = ({isLoadingToggle}) => {
     const date = useSelector((state) => state.date.date);
     const dispatch = useDispatch();
-    const [inputValue, setInputValue] = useState("");
+    const [employeeName, setEmployeeName] = useState("");
 
     function inputHandler(e) {
-        setInputValue(e.target.value);
+        setEmployeeName(e.target.value);
     }
 
-    function addEmployeeHandler(e) {
+    async function addEmployeeHandler(e) {
         if (e.key === "Enter") {
-            let name = inputValue.slice(0, 10).trim();
+            let name = employeeName.slice(0, 10).trim();
 
             if (!name) return;
             if (name.length >= 10) name += "...";
@@ -24,14 +24,21 @@ const InputEmployee = () => {
                 name,
                 dates: {
                     [key]: date.daysInMonth()
-                }
+                },
+                isDismissed: false
             };
 
-            setInputValue("");
-            (async () => {
+            setEmployeeName("");
+
+            try {
+                isLoadingToggle();
                 const id = await controller.setEmployee(employee);
                 dispatch(setEmployee({employee: {...employee, id}}));
-            })();
+            } catch (err) {
+                console.error(err);
+            } finally {
+                isLoadingToggle();
+            }
         }
     }
 
@@ -40,8 +47,8 @@ const InputEmployee = () => {
             <input
                 onChange={inputHandler}
                 onKeyDown={addEmployeeHandler}
-                value={inputValue}
-                className="w-full block p-2 text-xl border"
+                value={employeeName}
+                className="w-full block p-2 text-xl"
                 placeholder="Добавить сотрудника"
             />
         </>
