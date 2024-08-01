@@ -1,6 +1,20 @@
 import {createSlice} from "@reduxjs/toolkit";
 import controller from "../controller";
 
+function sortEmployees(arr) {
+    arr.sort(function (a, b) {
+        if (a.name > b.name) {
+            return 1;
+        }
+        if (a.name < b.name) {
+            return -1;
+        }
+        // a должно быть равным b
+        return 0;
+    });
+    arr.sort((a, b) => +a.isDismissed - +b.isDismissed);
+}
+
 const employeesSlice = createSlice({
     name: "employees",
     initialState: {
@@ -19,9 +33,21 @@ const employeesSlice = createSlice({
                 employee.dates[key] = date.daysInMonth();
                 return employee;
             });
+            sortEmployees(state.employees);
         },
         setEmployee: (state, action) => {
             state.employees.push(action.payload.employee);
+            sortEmployees(state.employees);
+        },
+        updateEmployee: (state, action) => {
+            const employeeId = action.payload.id;
+            const employeeName = action.payload.name;
+            const employeeSalary = +action.payload.salary;
+            const employee = state.employees.find(
+                (employee) => employee.id === employeeId
+            );
+            employee.name = employeeName;
+            employee.salary = employeeSalary;
         },
         setWorkingMonth(state, action) {
             const date = action.payload.date;
@@ -33,17 +59,18 @@ const employeesSlice = createSlice({
                     return employee;
                 }
 
+                month.salary = employee.salary;
                 employee.dates[key] = month;
                 return employee;
             });
         },
         setWorkingDay(state, action) {
-            const employeeId = action.payload.id;
             const key = action.payload.key;
             const number = action.payload.number;
             const hours = action.payload.hours;
-            const overtimeRatio = action.payload.overtimeRatio;
-            const workShift = action.payload.workShift;
+            const overtimeRatio = action.payload.overtimeRatio; // Коэффициент за сверхурочное время
+            const workShift = action.payload.workShift; // Норма рабочей смены
+            const employeeId = action.payload.id;
             const employee = state.employees.find(
                 (employee) => employee.id === employeeId
             );
@@ -59,14 +86,14 @@ const employeesSlice = createSlice({
                     ? day.hoursWorkedPerDay - day.workShift
                     : 0;
 
-            // Запись отработанных часов за месяц
+            // Количество отработанных часов за месяц
             const month = employee.dates[key];
             month.hoursWorkedPerMonth = month.days.reduce(
                 (acc, day) => acc + month[day].hoursWorkedPerDay,
                 0
             );
 
-            // Запись отработанных дней за месяц
+            // Количество отработанных дней за месяц
             month.daysWorkedPerMonth = month.days.filter(
                 (day) => month[day].isWorked
             ).length;
@@ -85,6 +112,8 @@ const employeesSlice = createSlice({
             );
             employee.isDismissed = action.payload.isDismissed;
             state.employees.sort((a, b) => +a.isDismissed - +b.isDismissed);
+
+            // Запись в БД
             controller.updateEmployeeIsDismissing(
                 action.payload.id,
                 action.payload.isDismissed
@@ -96,6 +125,7 @@ const employeesSlice = createSlice({
 export const {
     initEmployees,
     setEmployee,
+    updateEmployee,
     setWorkingMonth,
     setWorkingDay,
     toggleIsDismissed

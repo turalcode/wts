@@ -58,6 +58,13 @@ const HomePage = () => {
                             <th className="min-w-16 border border-slate-300">
                                 Часы
                             </th>
+
+                            <th className="min-w-40 border border-slate-300">
+                                Аванс
+                            </th>
+                            <th className="min-w-40 border border-slate-300">
+                                Зарплата
+                            </th>
                         </tr>
                     </thead>
                     <tbody>

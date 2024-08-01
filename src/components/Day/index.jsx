@@ -19,13 +19,7 @@ const Day = ({
                             ? "cursor-pointer border border-slate-300 bg-green-100 text-inherit"
                             : "cursor-pointer border border-slate-300 text-slate-300"
                     }
-                    title={
-                        day.isWorked
-                            ? `Коэффициент сверхурочного времени: ${
-                                  day.overtimeRatio || 1.25
-                              }`
-                            : null
-                    }
+                    title={`${employeeName}: кэф ${day.overtimeRatio || 1.25}`}
                 >
                     {day.hoursWorkedPerDay}
                 </td>
@@ -35,13 +29,6 @@ const Day = ({
                         day.isWorked
                             ? "border border-slate-300 bg-green-100 text-inherit"
                             : "border border-slate-300 text-slate-300"
-                    }
-                    title={
-                        day.isWorked
-                            ? `Коэффициент сверхурочного времени: ${
-                                  day.overtimeRatio || 1.25
-                              }`
-                            : null
                     }
                 >
                     {day.hoursWorkedPerDay}

@@ -28,18 +28,18 @@ const Modal = ({isOpen}) => {
         dispatch(toggleIsOpen({isOpen: false}));
     }
 
-    function handlerSubmit(e) {
+    function submitHandler(e) {
         e.preventDefault();
 
         if (
-            (+hours === +day.hoursWorkedPerDay &&
-                +overtimeRatio === +day.overtimeRatio &&
-                +workShift === +day.workShift) ||
-            !hours ||
-            !Number.isInteger(+hours) ||
-            +hours > 24 ||
-            +hours < 0
+            +hours === +day.hoursWorkedPerDay &&
+            +overtimeRatio === +day.overtimeRatio &&
+            +workShift === +day.workShift
         ) {
+            return;
+        }
+
+        if (!Number.isInteger(+hours) || +hours > 24 || +hours < 0) {
             return;
         }
 
@@ -66,7 +66,7 @@ const Modal = ({isOpen}) => {
                         <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
                             <div className="sm:flex sm:items-start">
                                 <form
-                                    onSubmit={handlerSubmit}
+                                    onSubmit={submitHandler}
                                     className="min-w-72 rounded-md text-base"
                                 >
                                     <DialogTitle className="text-gray-900">
@@ -74,7 +74,7 @@ const Modal = ({isOpen}) => {
                                             {employeeName}
                                         </div>
 
-                                        <div>
+                                        <fieldset>
                                             <label className="mr-1">
                                                 Кэф. сверхур. времени:
                                             </label>
@@ -91,9 +91,9 @@ const Modal = ({isOpen}) => {
                                                 </option>
                                                 <option value="2">2</option>
                                             </select>
-                                        </div>
+                                        </fieldset>
 
-                                        <div>
+                                        <fieldset>
                                             <label className="mr-1">
                                                 Рабочая смена:
                                             </label>
@@ -108,7 +108,7 @@ const Modal = ({isOpen}) => {
                                                     8 часов
                                                 </option>
                                             </select>
-                                        </div>
+                                        </fieldset>
                                     </DialogTitle>
 
                                     <hr className="my-4" />
@@ -133,7 +133,7 @@ const Modal = ({isOpen}) => {
                         <div className="py-3 flex justify-between px-6 text-base">
                             <button
                                 type="button"
-                                onClick={handlerSubmit}
+                                onClick={submitHandler}
                                 className="mt-3 py-1.5 px-3 bg-green-100 ring-1 ring-gray-300 rounded-md"
                             >
                                 Сохранить

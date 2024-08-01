@@ -43,6 +43,15 @@ const controller = {
         const doc = await addDoc(collection(db, "employees"), employee);
         return doc.id;
     },
+    updateEmployee: async (id, name, salary) => {
+        if (!useNetwork()) return;
+
+        const employeeRef = doc(db, "employees", id);
+        await updateDoc(employeeRef, {
+            name,
+            salary
+        });
+    },
     updateEmployeeWorkingDay: (id, employee) => {
         if (!useNetwork()) return;
 

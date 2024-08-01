@@ -7,51 +7,65 @@ const InputEmployee = ({isLoadingToggle}) => {
     const date = useSelector((state) => state.date.date);
     const dispatch = useDispatch();
     const [employeeName, setEmployeeName] = useState("");
+    const [employeeSalary, setEmployeeSalary] = useState(0);
 
-    function inputHandler(e) {
-        setEmployeeName(e.target.value);
-    }
+    async function addEmployeeHandler() {
+        let name = employeeName.slice(0, 10).trim();
 
-    async function addEmployeeHandler(e) {
-        if (e.key === "Enter") {
-            let name = employeeName.slice(0, 10).trim();
+        if (
+            !name ||
+            !Number.isInteger(+employeeSalary) ||
+            +employeeSalary <= 0
+        ) {
+            return alert("Поле 'Имя' или 'Оклад' содержит ошибку");
+        }
 
-            if (!name) return;
-            if (name.length >= 10) name += "...";
+        if (name.length >= 10) name += "...";
 
-            const key = date.key();
-            const employee = {
-                name,
-                dates: {
-                    [key]: date.daysInMonth()
-                },
-                isDismissed: false
-            };
+        const key = date.key();
+        const employee = {
+            name,
+            dates: {
+                [key]: {...date.daysInMonth(), salary: +employeeSalary}
+            },
+            isDismissed: false,
+            salary: +employeeSalary
+        };
 
-            setEmployeeName("");
+        setEmployeeName("");
 
-            try {
-                isLoadingToggle();
-                const id = await controller.setEmployee(employee);
-                dispatch(setEmployee({employee: {...employee, id}}));
-            } catch (err) {
-                console.error(err);
-            } finally {
-                isLoadingToggle();
-            }
+        try {
+            isLoadingToggle();
+            const id = await controller.setEmployee(employee);
+            dispatch(setEmployee({employee: {...employee, id}}));
+        } catch (err) {
+            console.error(err);
+        } finally {
+            isLoadingToggle();
         }
     }
 
     return (
-        <>
+        <fieldset className="flex">
             <input
-                onChange={inputHandler}
-                onKeyDown={addEmployeeHandler}
+                onChange={(e) => setEmployeeName(e.target.value)}
                 value={employeeName}
-                className="w-full block p-2 text-xl"
-                placeholder="Добавить сотрудника"
+                className="p-2 border-r"
+                placeholder="Имя сотрудника"
             />
-        </>
+            <input
+                onChange={(e) => setEmployeeSalary(e.target.value)}
+                value={employeeSalary}
+                className="p-2 border-r"
+                placeholder="Оклад"
+            />
+            <button
+                onClick={addEmployeeHandler}
+                className="p-2 bg-green-100 text-sm tracking-wide"
+            >
+                Добавить
+            </button>
+        </fieldset>
     );
 };
 
