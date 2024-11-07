@@ -7,6 +7,7 @@ import {removeUser} from "./store/userSlice";
 import {createPortal} from "react-dom";
 import Modal from "./components/Modal";
 import EmployeePage from "./pages/EmployeePage";
+import PrintPage from "./pages/PrintPage";
 
 Date.prototype.key = function (y, m) {
     const year = y || this.getFullYear();
@@ -17,9 +18,9 @@ Date.prototype.key = function (y, m) {
 Date.prototype.daysInMonth = function () {
     const length =
         32 - new Date(this.getFullYear(), this.getMonth(), 32).getDate();
-
     const month = {};
     const weeks = this.getWeeks();
+
     let i = 1;
     while (i <= length) {
         month[i] = {
@@ -34,7 +35,9 @@ Date.prototype.daysInMonth = function () {
             // Сверхурочное время
             overtimeWork: 0,
             // День недели
-            dayOfTheWeek: weeks[i - 1]
+            dayOfTheWeek: weeks[i - 1],
+            // Выходной
+            isDayOff: false
         };
         i++;
     }
@@ -84,9 +87,11 @@ const App = () => {
     return (
         <>
             <header className="p-5 flex justify-between items-center bg-slate-100">
-                <Link className="text-3xl" to={"/wts"}>
-                    Интеллект
-                </Link>
+                <div>
+                    <Link className="text-3xl" to={"/wts"}>
+                        Интеллект
+                    </Link>
+                </div>
 
                 {isAuth ? (
                     <Link
@@ -105,6 +110,7 @@ const App = () => {
             <main>
                 <Routes>
                     <Route path="/wts" element={<HomePage />} />
+                    <Route path="/print" element={<PrintPage />} />
                     <Route path="/wts/login" element={<LoginPage />} />
                     <Route
                         path="/wts/employees/:id"

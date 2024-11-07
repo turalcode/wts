@@ -23,6 +23,7 @@ const Modal = ({isOpen}) => {
     );
     const [workShift, setWorkShift] = useState(day.workShift || 8);
     const [hours, setHours] = useState(day.hoursWorkedPerDay || 0);
+    const [isDayOff, setIsDayOff] = useState(day.isDayOff);
 
     function onCloseModal() {
         dispatch(toggleIsOpen({isOpen: false}));
@@ -34,7 +35,8 @@ const Modal = ({isOpen}) => {
         if (
             +hours === +day.hoursWorkedPerDay &&
             +overtimeRatio === +day.overtimeRatio &&
-            +workShift === +day.workShift
+            +workShift === +day.workShift &&
+            isDayOff === day.isDayOff
         ) {
             return;
         }
@@ -50,7 +52,8 @@ const Modal = ({isOpen}) => {
                 number: day.number,
                 hours: +hours,
                 overtimeRatio: +overtimeRatio,
-                workShift: +workShift
+                workShift: +workShift,
+                isDayOff
             })
         );
         onCloseModal();
@@ -108,6 +111,23 @@ const Modal = ({isOpen}) => {
                                                     8 часов
                                                 </option>
                                             </select>
+                                        </fieldset>
+
+                                        <fieldset>
+                                            <label className="flex items-center">
+                                                <span className="mr-2">
+                                                    Выходной:
+                                                </span>
+                                                <input
+                                                    type="checkbox"
+                                                    checked={isDayOff}
+                                                    onChange={() =>
+                                                        setIsDayOff(!isDayOff)
+                                                    }
+                                                    className="sr-only peer"
+                                                />
+                                                <div className="cursor-pointer relative w-10 h-5 bg-gray-200 rounded-full dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full after:content-[''] after:absolute after:start-[0] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-300"></div>
+                                            </label>
                                         </fieldset>
                                     </DialogTitle>
 

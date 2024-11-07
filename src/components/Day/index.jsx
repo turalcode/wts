@@ -6,6 +6,10 @@ const Day = ({
     setWorkingDayHandler,
     isAuth
 }) => {
+    let classes = "border border-slate-300 text-slate-300";
+    day.isWorked && (classes += " bg-green-100 text-black");
+    day.isDayOff && (classes += " bg-yellow-100");
+
     return (
         <>
             {isAuth ? (
@@ -14,25 +18,15 @@ const Day = ({
                         !employeeIsDismissed &&
                         setWorkingDayHandler(day, employeeId, employeeName)
                     }
-                    className={
-                        day.isWorked
-                            ? "cursor-pointer border border-slate-300 bg-green-100 text-inherit"
-                            : "cursor-pointer border border-slate-300 text-slate-300"
-                    }
-                    title={`${employeeName}: кэф ${day.overtimeRatio || 1.25}`}
+                    className={classes}
+                    title={`${employeeName}: коэффициент сверхурочного времени - ${
+                        day.overtimeRatio || 1.25
+                    }`}
                 >
                     {day.hoursWorkedPerDay}
                 </td>
             ) : (
-                <td
-                    className={
-                        day.isWorked
-                            ? "border border-slate-300 bg-green-100 text-inherit"
-                            : "border border-slate-300 text-slate-300"
-                    }
-                >
-                    {day.hoursWorkedPerDay}
-                </td>
+                <td className={classes}>{day.hoursWorkedPerDay}</td>
             )}
         </>
     );

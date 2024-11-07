@@ -33,6 +33,7 @@ const InputEmployee = ({isLoadingToggle}) => {
         };
 
         setEmployeeName("");
+        setEmployeeSalary(0);
 
         try {
             isLoadingToggle();

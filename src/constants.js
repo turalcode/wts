@@ -12,6 +12,7 @@ export const MONTHS = [
     {name: "Ноябрь", value: 10},
     {name: "Декабрь", value: 11}
 ];
+
 export const YEARS = [
     {name: "2024", value: 2024},
     {name: "2025", value: 2025},
@@ -19,3 +20,5 @@ export const YEARS = [
     {name: "2027", value: 2027},
     {name: "2028", value: 2028}
 ];
+
+export const NUMBER_WORKING_DAYS = {2024.7: 22, 2024.8: 21, 2024.9: 23};

@@ -7,7 +7,8 @@ const Employee = ({
     dateKey,
     employee,
     toggleIsDismissedHandler,
-    setWorkingDayHandler
+    setWorkingDayHandler,
+    isPrint
 }) => {
     const {isAuth} = useAuth();
     const [isDismissed, setIsDismissed] = useState(employee.isDismissed);
@@ -47,22 +48,23 @@ const Employee = ({
                 </div>
             </td>
 
-            <DaysMonth
-                month={employee.dates[dateKey]}
-                employeeId={employee.id}
-                employeeName={employee.name}
-                employeeIsDismissed={employee.isDismissed}
-                setWorkingDayHandler={setWorkingDayHandler}
-                isAuth={isAuth}
-            />
+            {!isPrint && (
+                <DaysMonth
+                    month={employee.dates[dateKey]}
+                    employeeId={employee.id}
+                    employeeName={employee.name}
+                    employeeIsDismissed={employee.isDismissed}
+                    setWorkingDayHandler={setWorkingDayHandler}
+                    isAuth={isAuth}
+                />
+            )}
+
             <td className="border border-slate-300 bg-slate-100 leading-tight">
                 <p>{employee.dates[dateKey].daysWorkedPerMonth}</p>
             </td>
             <td className="border border-slate-300 bg-slate-100 leading-tight">
                 <p>{employee.dates[dateKey].hoursWorkedPerMonth}</p>
             </td>
-            <td className="border border-slate-300 leading-tight"></td>
-            <td className="border border-slate-300 leading-tight"></td>
         </>
     );
 };

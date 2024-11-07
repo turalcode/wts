@@ -4,9 +4,10 @@ import Select from "../UI/Select";
 import {useDispatch, useSelector} from "react-redux";
 import {setDate} from "../../store/dateSlice";
 import {setWorkingMonth} from "../../store/employeesSlice";
-import {CalendarIcon} from "../Icons";
+import {CalendarIcon, PrintIcon} from "../Icons";
+import {Link} from "react-router-dom";
 
-const SelectDate = () => {
+const SelectDate = ({isPrint}) => {
     const date = useSelector((state) => state.date.date);
     const dispatch = useDispatch();
     const [year, setYear] = useState(date.getFullYear());
@@ -46,6 +47,21 @@ const SelectDate = () => {
                     callback={selectMonthHandler}
                 />
             </div>
+
+            {isPrint ? (
+                <div
+                    className="ml-2 cursor-pointer"
+                    onClick={() => window.print()}
+                >
+                    <PrintIcon />
+                </div>
+            ) : (
+                <div className="ml-2">
+                    <Link to={"/print"}>
+                        <PrintIcon />
+                    </Link>
+                </div>
+            )}
         </div>
     );
 };

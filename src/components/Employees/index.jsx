@@ -5,7 +5,7 @@ import {useNetwork} from "../../hooks/useNetwork";
 import {toggleIsOpen} from "../../store/modalSlice";
 import {setDayForEditing} from "../../store/dayForEditingSlice";
 
-const Employees = () => {
+const Employees = ({isPrint}) => {
     const employees = useSelector((state) => state.employees.employees);
     const date = useSelector((state) => state.date.date);
     const key = date.key();
@@ -41,7 +41,17 @@ const Employees = () => {
                         employee={employee}
                         toggleIsDismissedHandler={toggleIsDismissedHandler}
                         setWorkingDayHandler={setWorkingDayHandler}
+                        isPrint={isPrint}
                     />
+
+                    {isPrint && (
+                        <>
+                            <td className="border border-slate-300"></td>
+                            <td className="border border-slate-300"></td>
+                            <td className="border border-slate-300"></td>
+                            <td className="border border-slate-300"></td>
+                        </>
+                    )}
                 </tr>
             ))}
         </>

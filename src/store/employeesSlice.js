@@ -31,6 +31,7 @@ const employeesSlice = createSlice({
                 }
 
                 employee.dates[key] = date.daysInMonth();
+                employee.dates[key].salary = +employee.salary;
                 return employee;
             });
             sortEmployees(state.employees);
@@ -48,6 +49,23 @@ const employeesSlice = createSlice({
             );
             employee.name = employeeName;
             employee.salary = employeeSalary;
+        },
+        updateMonthSalary: (state, action) => {
+            const employeeId = action.payload.employeeId;
+            const key = action.payload.key;
+            const salary = +action.payload.salary;
+            const setSalaryReportHandler =
+                action.payload.setSalaryReportHandler;
+            const employee = state.employees.find(
+                (employee) => employee.id === employeeId
+            );
+            employee.dates[key].salary = salary;
+
+            // Повторный расчет заработной платы
+            setSalaryReportHandler(employee);
+
+            // Запись в БД
+            controller.updateMonthSalary(employeeId, employee);
         },
         setWorkingMonth(state, action) {
             const date = action.payload.date;
@@ -70,6 +88,7 @@ const employeesSlice = createSlice({
             const hours = action.payload.hours;
             const overtimeRatio = action.payload.overtimeRatio; // Коэффициент за сверхурочное время
             const workShift = action.payload.workShift; // Норма рабочей смены
+            const isDayOff = action.payload.isDayOff; // Выходной
             const employeeId = action.payload.id;
             const employee = state.employees.find(
                 (employee) => employee.id === employeeId
@@ -81,6 +100,7 @@ const employeesSlice = createSlice({
             day.hoursWorkedPerDay = hours;
             day.overtimeRatio = overtimeRatio;
             day.workShift = workShift;
+            day.isDayOff = isDayOff;
             day.overtimeWork =
                 day.hoursWorkedPerDay > day.workShift
                     ? day.hoursWorkedPerDay - day.workShift
@@ -125,6 +145,7 @@ const employeesSlice = createSlice({
 export const {
     initEmployees,
     setEmployee,
+    updateMonthSalary,
     updateEmployee,
     setWorkingMonth,
     setWorkingDay,

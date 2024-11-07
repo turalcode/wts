@@ -52,6 +52,16 @@ const controller = {
             salary
         });
     },
+    updateMonthSalary: async (id, employee) => {
+        if (!useNetwork()) return;
+
+        const employeeRef = doc(db, "employees", id);
+        updateDoc(employeeRef, {
+            dates: {
+                ...employee.dates
+            }
+        });
+    },
     updateEmployeeWorkingDay: (id, employee) => {
         if (!useNetwork()) return;
 
@@ -67,7 +77,7 @@ const controller = {
 
         const employeeRef = doc(db, "employees", id);
         updateDoc(employeeRef, {
-            isDismissed: isDismissed
+            isDismissed
         });
     }
 };
