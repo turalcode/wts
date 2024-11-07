@@ -6,8 +6,10 @@ const Day = ({
     setWorkingDayHandler,
     isAuth
 }) => {
-    let classes = "border border-slate-300 text-slate-300";
-    day.isWorked && (classes += " bg-green-100 text-black");
+    let classes = "border border-slate-300";
+    day.isWorked
+        ? (classes += " bg-green-100 text-black")
+        : (classes += " text-slate-300");
     day.isDayOff && (classes += " bg-yellow-100");
 
     return (
