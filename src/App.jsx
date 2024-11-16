@@ -118,7 +118,6 @@ const App = () => {
                     />
                 </Routes>
             </main>
-
             {isOpen && createPortal(<Modal isOpen={isOpen} />, document.body)}
         </>
     );

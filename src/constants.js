@@ -21,4 +21,21 @@ export const YEARS = [
     {name: "2028", value: 2028}
 ];
 
-export const NUMBER_WORKING_DAYS = {2024.7: 22, 2024.8: 21, 2024.9: 23};
+export const MONTHS_PARAMETERS = {
+    2024.7: {
+        workingDays: 22,
+        appVersion: 1.1
+    },
+    2024.8: {
+        workingDays: 21,
+        appVersion: 1.1
+    },
+    2024.9: {
+        workingDays: 23,
+        appVersion: 1.1
+    },
+    "2024.10": {
+        workingDays: 20,
+        appVersion: 1.2
+    }
+};

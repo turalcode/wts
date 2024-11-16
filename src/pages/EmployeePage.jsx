@@ -2,7 +2,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {useAuth} from "../hooks/useAuth";
 import {useNavigate, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
-import {MONTHS, NUMBER_WORKING_DAYS} from "../constants";
+import {MONTHS, MONTHS_PARAMETERS} from "../constants";
 import {useCheckVersion} from "../hooks/useVersion";
 import {updateEmployee} from "../store/employeesSlice";
 import controller from "../controller";
@@ -39,7 +39,9 @@ const EmployeePage = () => {
             const month = employee.dates[key];
 
             // Поддерживает ли месяц возможность отчета о зарплате
-            if (useCheckVersion.isSalaryReport(key)) continue;
+            if (!useCheckVersion.isSalaryReport(key)) continue;
+
+            // if (!useCheckVersion.isDayOff(key)) continue;
             if (month.daysWorkedPerMonth === 0) continue;
 
             // Месячная зарплата
@@ -49,7 +51,8 @@ const EmployeePage = () => {
             // Общая сумма за месяц
             let total = 0;
             // Количество рабочих дней в месяце
-            const numberWorkingDays = NUMBER_WORKING_DAYS[key] ?? 22;
+            // const numberWorkingDays = MONTHS_PARAMETERS[key].workingDays;
+            const numberWorkingDays = 22;
 
             month.days.forEach((number) => {
                 const day = month[number];
@@ -75,7 +78,9 @@ const EmployeePage = () => {
                         overtime +=
                             costHourOvertimeWork * day.hoursWorkedPerDay;
                     } else {
-                        salary += costOfOneHourOfWork * day.workShift;
+                        salary +=
+                            costOfOneHourOfWork *
+                            (day.hoursWorkedPerDay - day.overtimeWork);
                         overtime += costHourOvertimeWork * day.overtimeWork;
                     }
 
@@ -102,7 +107,7 @@ const EmployeePage = () => {
 
     function modifyDate(date) {
         if (date) {
-            const index = +date.at(-1);
+            const index = +date.slice(5);
             return `${date.slice(0, 4)} - ${MONTHS[index].name}`;
         }
     }
