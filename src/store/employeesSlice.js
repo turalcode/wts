@@ -41,14 +41,24 @@ const employeesSlice = createSlice({
             sortEmployees(state.employees);
         },
         updateEmployee: (state, action) => {
-            const employeeId = action.payload.id;
-            const employeeName = action.payload.name;
-            const employeeSalary = +action.payload.salary;
             const employee = state.employees.find(
-                (employee) => employee.id === employeeId
+                (employee) => employee.id === action.payload.id
             );
-            employee.name = employeeName;
-            employee.salary = employeeSalary;
+
+            if (employee) {
+                employee.name = action.payload.name;
+                employee.salary = +action.payload.salary;
+                employee.phone = action.payload.phone;
+                employee.telegramID = action.payload.telegramID;
+
+                controller.updateEmployee(
+                    action.payload.id,
+                    action.payload.name,
+                    +action.payload.salary,
+                    action.payload.phone,
+                    action.payload.telegramID
+                );
+            }
         },
         updateMonthSalary: (state, action) => {
             const employeeId = action.payload.employeeId;

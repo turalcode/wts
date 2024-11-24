@@ -15,7 +15,7 @@ const Employees = ({isPrint}) => {
         if (!useNetwork()) return;
 
         dispatch(setDayForEditing({day, employeeId, employeeName}));
-        dispatch(toggleIsOpen({isOpen: true}));
+        dispatch(toggleIsOpen({isOpenModalDay: true}));
     };
 
     const toggleIsDismissedHandler = (employeeId, isDismissed) => {

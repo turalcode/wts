@@ -2,12 +2,10 @@ import {useDispatch, useSelector} from "react-redux";
 import {useAuth} from "../hooks/useAuth";
 import {useNavigate, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
-import {MONTHS, MONTHS_PARAMETERS} from "../constants";
+import {MONTHS} from "../constants";
 import {useCheckVersion} from "../hooks/useVersion";
 import {updateEmployee} from "../store/employeesSlice";
-import controller from "../controller";
 import MonthSalary from "../components/MonthSalary";
-import {LoadingIcon} from "../components/Icons";
 
 const EmployeePage = () => {
     const {isAuth} = useAuth();
@@ -17,8 +15,9 @@ const EmployeePage = () => {
     const dispatch = useDispatch();
     const [employeeName, setEmployeeName] = useState("");
     const [employeeSalary, setEmployeeSalary] = useState(0);
+    const [phone, setPhone] = useState("");
+    const [telegramID, setTelegramID] = useState("");
     const [salaryReport, setSalaryReport] = useState([]);
-    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         if (!isAuth) return navigate("/wts");
@@ -29,6 +28,8 @@ const EmployeePage = () => {
             setSalaryReportHandler(employee);
             setEmployeeName(employee.name);
             setEmployeeSalary(employee.salary);
+            setPhone(employee.phone || "");
+            setTelegramID(employee.telegramID || "");
         }
     }, []);
 
@@ -40,8 +41,6 @@ const EmployeePage = () => {
 
             // Поддерживает ли месяц возможность отчета о зарплате
             if (!useCheckVersion.isSalaryReport(key)) continue;
-
-            // if (!useCheckVersion.isDayOff(key)) continue;
             if (month.daysWorkedPerMonth === 0) continue;
 
             // Месячная зарплата
@@ -71,17 +70,29 @@ const EmployeePage = () => {
                         costOfOneHourOfWork * day.overtimeRatio;
 
                     // Подсчет зарплаты
-                    if (
-                        day.dayOfTheWeek === "Сб" ||
-                        day.dayOfTheWeek === "Вс"
-                    ) {
-                        overtime +=
-                            costHourOvertimeWork * day.hoursWorkedPerDay;
+                    if (useCheckVersion.isDayOff(key)) {
+                        if (day.isDayOff) {
+                            overtime +=
+                                costHourOvertimeWork * day.hoursWorkedPerDay;
+                        } else {
+                            salary +=
+                                costOfOneHourOfWork *
+                                (day.hoursWorkedPerDay - day.overtimeWork);
+                            overtime += costHourOvertimeWork * day.overtimeWork;
+                        }
                     } else {
-                        salary +=
-                            costOfOneHourOfWork *
-                            (day.hoursWorkedPerDay - day.overtimeWork);
-                        overtime += costHourOvertimeWork * day.overtimeWork;
+                        if (
+                            day.dayOfTheWeek === "Сб" ||
+                            day.dayOfTheWeek === "Вс"
+                        ) {
+                            overtime +=
+                                costHourOvertimeWork * day.hoursWorkedPerDay;
+                        } else {
+                            salary +=
+                                costOfOneHourOfWork *
+                                (day.hoursWorkedPerDay - day.overtimeWork);
+                            overtime += costHourOvertimeWork * day.overtimeWork;
+                        }
                     }
 
                     total = salary + overtime;
@@ -112,7 +123,8 @@ const EmployeePage = () => {
         }
     }
 
-    async function updateEmployeeHandler() {
+    async function updateEmployeeHandler(event) {
+        event.preventDefault();
         let name = employeeName.slice(0, 10).trim();
 
         if (
@@ -125,17 +137,18 @@ const EmployeePage = () => {
 
         if (name.length >= 10) name += "...";
 
-        dispatch(
-            updateEmployee({id, name: employeeName, salary: +employeeSalary})
-        );
-
         try {
-            setIsLoading(true);
-            await controller.updateEmployee(id, employeeName, +employeeSalary);
+            dispatch(
+                updateEmployee({
+                    id,
+                    name: employeeName,
+                    salary: +employeeSalary,
+                    phone,
+                    telegramID
+                })
+            );
         } catch (err) {
             console.error(err);
-        } finally {
-            setIsLoading(false);
         }
     }
 
@@ -146,34 +159,54 @@ const EmployeePage = () => {
 
     return (
         <>
-            <fieldset className="flex">
-                <input
-                    onChange={(e) => setEmployeeName(e.target.value)}
-                    value={employeeName}
-                    className="p-2 text-xl border-r"
-                    placeholder="Имя сотрудника"
-                />
-                <input
-                    onChange={(e) => setEmployeeSalary(e.target.value)}
-                    value={employeeSalary}
-                    className="p-2 border-r"
-                    placeholder="Оклад"
-                />
+            <form className="mb-5 pb-4 flex bg-slate-100">
+                <fieldset className="flex">
+                    <label className="p-2 bg-slate-100">Имя:</label>
+                    <input
+                        onChange={(e) => setEmployeeName(e.target.value)}
+                        value={employeeName}
+                        className="px-2 text-xl rounded-lg"
+                        placeholder="Имя сотрудника"
+                    />
+                </fieldset>
+
+                <fieldset className="ml-4 flex">
+                    <label className="p-2 bg-slate-100">Оклад:</label>
+                    <input
+                        onChange={(e) => setEmployeeSalary(e.target.value)}
+                        value={employeeSalary}
+                        className="px-2 rounded-lg"
+                        placeholder="Текущий оклад"
+                    />
+                </fieldset>
+
+                <fieldset className="ml-4 flex">
+                    <label className="p-2 bg-slate-100">Телефон:</label>
+                    <input
+                        onChange={(e) => setPhone(e.target.value)}
+                        value={phone}
+                        className="px-2 rounded-lg"
+                        placeholder="+7(999)999-99-99"
+                    />
+                </fieldset>
+
+                <fieldset className="ml-4 flex">
+                    <label className="p-2 bg-slate-100">Telegram ID:</label>
+                    <input
+                        onChange={(e) => setTelegramID(e.target.value)}
+                        value={telegramID}
+                        className="px-2 rounded-lg"
+                        placeholder="ID"
+                    />
+                </fieldset>
 
                 <button
-                    disabled={isLoading}
                     onClick={updateEmployeeHandler}
-                    className="p-2 bg-green-100 text-sm tracking-wide"
+                    className="ml-2 py-2 px-4 bg-green-100 text-sm tracking-wide rounded-lg"
                 >
-                    {isLoading ? (
-                        <div role="status">
-                            <LoadingIcon />
-                        </div>
-                    ) : (
-                        "Сохранить"
-                    )}
+                    Обновить
                 </button>
-            </fieldset>
+            </form>
 
             <table className="w-full text-left rtl:text-right dark:text-gray-400 text-gray-900">
                 <thead className="bg-slate-100">
@@ -182,16 +215,13 @@ const EmployeePage = () => {
                             Дата
                         </th>
                         <th scope="col" className="px-6 py-3">
-                            Рабочие дни
+                            Оклад
                         </th>
                         <th scope="col" className="px-6 py-3">
-                            Месячный оклад
+                            По графику
                         </th>
                         <th scope="col" className="px-6 py-3">
-                            Посменно
-                        </th>
-                        <th scope="col" className="px-6 py-3">
-                            Сверхурочные
+                            Переработка
                         </th>
                         <th scope="col" className="px-6 py-3">
                             К зарплате
@@ -210,9 +240,6 @@ const EmployeePage = () => {
                                     className="px-6 py-4 whitespace-nowrap dark:text-white capitalize"
                                 >
                                     {report.month.date}
-                                </td>
-                                <td className="px-6 py-4">
-                                    {report.month.numberWorkingDays}
                                 </td>
                                 <td className="px-6 py-4">
                                     <MonthSalary

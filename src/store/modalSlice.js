@@ -3,11 +3,14 @@ import {createSlice} from "@reduxjs/toolkit";
 const modalSlice = createSlice({
     name: "modal",
     initialState: {
-        isOpen: false
+        isOpenModalDay: false,
+        isOpenModalInputEmployee: false
     },
     reducers: {
         toggleIsOpen(state, action) {
-            state.isOpen = action.payload.isOpen;
+            state.isOpenModalDay = action.payload.isOpenModalDay;
+            state.isOpenModalInputEmployee =
+                action.payload.isOpenModalInputEmployee;
         }
     }
 });

@@ -9,7 +9,7 @@ import {toggleIsOpen} from "../../store/modalSlice";
 import {useState} from "react";
 import {setWorkingDay} from "../../store/employeesSlice";
 
-const Modal = ({isOpen}) => {
+const ModalDay = ({isOpenModalDay}) => {
     const dispatch = useDispatch();
     const date = useSelector((state) => state.date.date);
     const day = useSelector((state) => state.dayForEditing.day);
@@ -17,7 +17,6 @@ const Modal = ({isOpen}) => {
     const employeeName = useSelector(
         (state) => state.dayForEditing.employeeName
     );
-
     const [overtimeRatio, setOvertimeRatio] = useState(
         day.overtimeRatio || 1.25
     );
@@ -26,7 +25,7 @@ const Modal = ({isOpen}) => {
     const [isDayOff, setIsDayOff] = useState(day.isDayOff);
 
     function onCloseModal() {
-        dispatch(toggleIsOpen({isOpen: false}));
+        dispatch(toggleIsOpen({isOpenModalDay: false}));
     }
 
     function submitHandler(e) {
@@ -40,6 +39,8 @@ const Modal = ({isOpen}) => {
         ) {
             return;
         }
+
+        if (+hours === 0 && isDayOff === true) return;
 
         if (!Number.isInteger(+hours) || +hours > 24 || +hours < 0) {
             return;
@@ -60,7 +61,11 @@ const Modal = ({isOpen}) => {
     }
 
     return (
-        <Dialog open={isOpen} onClose={onCloseModal} className="relative z-10">
+        <Dialog
+            open={isOpenModalDay}
+            onClose={onCloseModal}
+            className="relative z-10"
+        >
             <DialogBackdrop className="fixed inset-0 bg-gray-500 bg-opacity-75" />
 
             <div className="fixed inset-0 z-10 overflow-y-auto">
@@ -92,6 +97,7 @@ const Modal = ({isOpen}) => {
                                                 <option value="1.25">
                                                     1.25
                                                 </option>
+                                                <option value="1.5">1.5</option>
                                                 <option value="2">2</option>
                                             </select>
                                         </fieldset>
@@ -173,4 +179,4 @@ const Modal = ({isOpen}) => {
     );
 };
 
-export default Modal;
+export default ModalDay;

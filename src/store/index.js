@@ -4,6 +4,7 @@ import employeesReducer from "./employeesSlice";
 import userReducer from "./userSlice";
 import modalReducer from "./modalSlice";
 import dayForEditingReducer from "./dayForEditingSlice";
+import isLoadingReducer from "./loadingSlice";
 
 export default configureStore({
     reducer: {
@@ -11,7 +12,8 @@ export default configureStore({
         employees: employeesReducer,
         user: userReducer,
         modal: modalReducer,
-        dayForEditing: dayForEditingReducer
+        dayForEditing: dayForEditingReducer,
+        isLoading: isLoadingReducer
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({

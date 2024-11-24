@@ -5,9 +5,12 @@ import {useAuth} from "./hooks/useAuth";
 import {useDispatch, useSelector} from "react-redux";
 import {removeUser} from "./store/userSlice";
 import {createPortal} from "react-dom";
-import Modal from "./components/Modal";
+import ModalDay from "./components/ModalDay";
 import EmployeePage from "./pages/EmployeePage";
 import PrintPage from "./pages/PrintPage";
+import ModalInputEmployee from "./components/ModalInputEmployee";
+import imageAddEmployee from "../public/images/add-employee.png";
+import {toggleIsOpen} from "./store/modalSlice";
 
 Date.prototype.key = function (y, m) {
     const year = y || this.getFullYear();
@@ -70,7 +73,10 @@ const App = () => {
     const {isAuth} = useAuth();
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const isOpen = useSelector((state) => state.modal.isOpen);
+    const isOpenModalDay = useSelector((state) => state.modal.isOpenModalDay);
+    const isOpenModalInputEmployee = useSelector(
+        (state) => state.modal.isOpenModalInputEmployee
+    );
 
     function logoutHandler() {
         dispatch(
@@ -86,24 +92,43 @@ const App = () => {
 
     return (
         <>
-            <header className="p-5 flex justify-between items-center bg-slate-100">
-                <div>
-                    <Link className="text-3xl" to={"/wts"}>
-                        Интеллект
-                    </Link>
+            <header className="p-5 bg-slate-100">
+                <div className="flex justify-between items-center">
+                    <div>
+                        <Link className="text-3xl" to={"/wts"}>
+                            Интеллект
+                        </Link>
+                    </div>
+
+                    {isAuth ? (
+                        <Link
+                            onClick={(e) => {
+                                e.preventDefault();
+                                logoutHandler();
+                            }}
+                        >
+                            Выйти
+                        </Link>
+                    ) : (
+                        <Link to={"/wts/login"}>Войти</Link>
+                    )}
                 </div>
 
-                {isAuth ? (
-                    <Link
-                        onClick={(e) => {
-                            e.preventDefault();
-                            logoutHandler();
-                        }}
-                    >
-                        Выйти
-                    </Link>
-                ) : (
-                    <Link to={"/wts/login"}>Войти</Link>
+                {isAuth && (
+                    <div className="mt-5 p-2 flex bg-white rounded-lg">
+                        <button
+                            onClick={() =>
+                                dispatch(
+                                    toggleIsOpen({
+                                        isOpenModalInputEmployee: true
+                                    })
+                                )
+                            }
+                            className="p-2 rounded-lg bg-green-100"
+                        >
+                            <img className="size-8" src={imageAddEmployee} />
+                        </button>
+                    </div>
                 )}
             </header>
 
@@ -118,7 +143,19 @@ const App = () => {
                     />
                 </Routes>
             </main>
-            {isOpen && createPortal(<Modal isOpen={isOpen} />, document.body)}
+
+            {isOpenModalDay &&
+                createPortal(
+                    <ModalDay isOpenModalDay={isOpenModalDay} />,
+                    document.body
+                )}
+            {isOpenModalInputEmployee &&
+                createPortal(
+                    <ModalInputEmployee
+                        isOpenModalInputEmployee={isOpenModalInputEmployee}
+                    />,
+                    document.body
+                )}
         </>
     );
 };
