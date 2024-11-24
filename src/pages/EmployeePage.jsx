@@ -137,19 +137,15 @@ const EmployeePage = () => {
 
         if (name.length >= 10) name += "...";
 
-        try {
-            dispatch(
-                updateEmployee({
-                    id,
-                    name: employeeName,
-                    salary: +employeeSalary,
-                    phone,
-                    telegramID
-                })
-            );
-        } catch (err) {
-            console.error(err);
-        }
+        dispatch(
+            updateEmployee({
+                id,
+                name: employeeName,
+                salary: +employeeSalary,
+                phone,
+                telegramID
+            })
+        );
     }
 
     function setSalaryReportHandler(employee) {

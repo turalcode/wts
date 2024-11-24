@@ -25,62 +25,81 @@ const controller = {
             q = query(collection(db, "employees"));
         }
 
-        const employees = await getDocs(q);
-        const result = employees.docs.map((doc) => ({
-            ...doc.data(),
-            id: doc.id
-        }));
-
-        if (isAuth) {
+        try {
+            const employees = await getDocs(q);
+            const result = employees.docs.map((doc) => ({
+                ...doc.data(),
+                id: doc.id
+            }));
             return result.sort((a, b) => +a.isDismissed - +b.isDismissed);
-        } else {
-            return result;
+        } catch (error) {
+            console.error(error);
         }
     },
     setEmployee: async (employee) => {
         if (!useNetwork()) return;
 
-        const doc = await addDoc(collection(db, "employees"), employee);
-        return doc.id;
+        try {
+            const doc = await addDoc(collection(db, "employees"), employee);
+            return doc.id;
+        } catch (error) {
+            console.error(error);
+        }
     },
     updateEmployee: async (id, name, salary, phone, telegramID) => {
         if (!useNetwork()) return;
 
-        const employeeRef = doc(db, "employees", id);
-        await updateDoc(employeeRef, {
-            name,
-            salary,
-            phone,
-            telegramID
-        });
+        try {
+            const employeeRef = doc(db, "employees", id);
+            await updateDoc(employeeRef, {
+                name,
+                salary,
+                phone,
+                telegramID
+            });
+        } catch (error) {
+            console.error(error);
+        }
     },
     updateMonthSalary: async (id, employee) => {
         if (!useNetwork()) return;
 
-        const employeeRef = doc(db, "employees", id);
-        updateDoc(employeeRef, {
-            dates: {
-                ...employee.dates
-            }
-        });
+        try {
+            const employeeRef = doc(db, "employees", id);
+            updateDoc(employeeRef, {
+                dates: {
+                    ...employee.dates
+                }
+            });
+        } catch (error) {
+            console.error(error);
+        }
     },
     updateEmployeeWorkingDay: (id, employee) => {
         if (!useNetwork()) return;
 
-        const employeeRef = doc(db, "employees", id);
-        updateDoc(employeeRef, {
-            dates: {
-                ...employee.dates
-            }
-        });
+        try {
+            const employeeRef = doc(db, "employees", id);
+            updateDoc(employeeRef, {
+                dates: {
+                    ...employee.dates
+                }
+            });
+        } catch (error) {
+            console.error(error);
+        }
     },
     updateEmployeeIsDismissing: (id, isDismissed) => {
         if (!useNetwork()) return;
 
-        const employeeRef = doc(db, "employees", id);
-        updateDoc(employeeRef, {
-            isDismissed
-        });
+        try {
+            const employeeRef = doc(db, "employees", id);
+            updateDoc(employeeRef, {
+                isDismissed
+            });
+        } catch (error) {
+            console.error(error);
+        }
     }
 };
 
