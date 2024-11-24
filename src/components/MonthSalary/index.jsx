@@ -1,5 +1,5 @@
 import {useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
 import {updateMonthSalary} from "../../store/employeesSlice";
 
 const MonthSalary = ({
@@ -8,7 +8,6 @@ const MonthSalary = ({
     monthSalary,
     setSalaryReportHandler
 }) => {
-    const employees = useSelector((state) => state.employees.employees);
     const dispatch = useDispatch();
     const [salary, setMonthSalary] = useState(+monthSalary);
 

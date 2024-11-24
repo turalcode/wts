@@ -1,7 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
 import {toggleIsDismissed} from "../../store/employeesSlice";
 import Employee from "../Employee";
-import {useNetwork} from "../../hooks/useNetwork";
 import {toggleIsOpen} from "../../store/modalSlice";
 import {setDayForEditing} from "../../store/dayForEditingSlice";
 
@@ -12,15 +11,11 @@ const Employees = ({isPrint}) => {
     const dispatch = useDispatch();
 
     const setWorkingDayHandler = (day, employeeId, employeeName) => {
-        if (!useNetwork()) return;
-
         dispatch(setDayForEditing({day, employeeId, employeeName}));
         dispatch(toggleIsOpen({isOpenModalDay: true}));
     };
 
     const toggleIsDismissedHandler = (employeeId, isDismissed) => {
-        if (!useNetwork()) return;
-
         dispatch(
             toggleIsDismissed({
                 id: employeeId,

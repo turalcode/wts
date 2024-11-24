@@ -6,12 +6,10 @@ import {useAuth} from "../hooks/useAuth";
 import controller from "../controller";
 import {useDispatch, useSelector} from "react-redux";
 import {initEmployees} from "../store/employeesSlice";
-import {useNetwork} from "../hooks/useNetwork";
 import Loading from "../components/Loading";
 import {setIsLoading} from "../store/loadingSlice";
 
 const HomePage = () => {
-    useNetwork();
     const {isAuth} = useAuth();
     const date = useSelector((state) => state.date.date);
     const isLoading = useSelector((state) => state.isLoading.isLoading);
@@ -20,7 +18,8 @@ const HomePage = () => {
     async function getEmployees() {
         try {
             const employees = await controller.getEmployees(isAuth);
-            dispatch(initEmployees({employees, date}));
+
+            if (employees) dispatch(initEmployees({employees, date}));
         } catch (err) {
             console.error(err);
         } finally {

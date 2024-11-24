@@ -40,7 +40,7 @@ const LoginPage = () => {
 
                 return navigate("/wts");
             })
-            .catch(() => alert("Что-то пошло не так..."));
+            .catch(() => alert("Нет подключения к интернету"));
     }
 
     return (

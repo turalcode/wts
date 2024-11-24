@@ -34,9 +34,14 @@ const EmployeePage = () => {
     }, []);
 
     function salaryReportCalculation(employee) {
+        // Сортировка ключей
+        const keys = Object.keys(employee.dates).sort(
+            (a, b) => +b.replace(".", "") - +a.replace(".", "")
+        );
+
         const report = [];
 
-        for (const key in employee.dates) {
+        for (const key of keys) {
             const month = employee.dates[key];
 
             // Поддерживает ли месяц возможность отчета о зарплате
