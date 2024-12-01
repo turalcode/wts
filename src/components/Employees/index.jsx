@@ -15,15 +15,6 @@ const Employees = ({isPrint}) => {
         dispatch(toggleIsOpen({isOpenModalDay: true}));
     };
 
-    const toggleIsDismissedHandler = (employeeId, isDismissed) => {
-        dispatch(
-            toggleIsDismissed({
-                id: employeeId,
-                isDismissed
-            })
-        );
-    };
-
     return (
         <>
             {employees.map((employee) => (
@@ -34,7 +25,6 @@ const Employees = ({isPrint}) => {
                     <Employee
                         dateKey={key}
                         employee={employee}
-                        toggleIsDismissedHandler={toggleIsDismissedHandler}
                         setWorkingDayHandler={setWorkingDayHandler}
                         isPrint={isPrint}
                     />

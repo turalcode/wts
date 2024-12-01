@@ -8,6 +8,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {initEmployees} from "../store/employeesSlice";
 import Loading from "../components/Loading";
 import {setIsLoading} from "../store/loadingSlice";
+import imageClock from "../../public/images/clock.png";
 
 const HomePage = () => {
     const {isAuth} = useAuth();
@@ -42,11 +43,17 @@ const HomePage = () => {
 
                         <DaysWeek />
 
-                        <th className="min-w-16 border border-slate-300">
-                            Дни
+                        <th className="min-w-12 border border-slate-300">
+                            <img
+                                className="mx-auto size-8 bg-green-100 rounded-full"
+                                src={imageClock}
+                            />
                         </th>
-                        <th className="min-w-16 border border-slate-300">
-                            Часы
+                        <th className="min-w-12 border border-slate-300">
+                            <img
+                                className="mx-auto size-8 bg-yellow-100 rounded-full"
+                                src={imageClock}
+                            />
                         </th>
                     </tr>
                 </thead>

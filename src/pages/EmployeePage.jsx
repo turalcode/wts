@@ -6,6 +6,7 @@ import {MONTHS} from "../constants";
 import {useCheckVersion} from "../hooks/useVersion";
 import {updateEmployee} from "../store/employeesSlice";
 import MonthSalary from "../components/MonthSalary";
+import imageRefresh from "../../public/images/refresh.png";
 
 const EmployeePage = () => {
     const {isAuth} = useAuth();
@@ -205,7 +206,10 @@ const EmployeePage = () => {
                     onClick={updateEmployeeHandler}
                     className="ml-2 py-2 px-4 bg-green-100 text-sm tracking-wide rounded-lg"
                 >
-                    Обновить
+                    <img
+                        className="size-7 bg-green-100 rounded-full"
+                        src={imageRefresh}
+                    />
                 </button>
             </form>
 

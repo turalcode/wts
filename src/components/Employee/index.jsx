@@ -1,17 +1,12 @@
-import {useState} from "react";
 import DaysMonth from "../DaysMonth";
 import {useAuth} from "../../hooks/useAuth";
 import {Link} from "react-router-dom";
+import {useDispatch} from "react-redux";
+import {toggleIsDismissed} from "../../store/employeesSlice";
 
-const Employee = ({
-    dateKey,
-    employee,
-    toggleIsDismissedHandler,
-    setWorkingDayHandler,
-    isPrint
-}) => {
+const Employee = ({dateKey, employee, setWorkingDayHandler, isPrint}) => {
     const {isAuth} = useAuth();
-    const [isDismissed, setIsDismissed] = useState(employee.isDismissed);
+    const dispatch = useDispatch();
 
     return (
         <>
@@ -22,12 +17,14 @@ const Employee = ({
                             <label>
                                 <input
                                     type="checkbox"
-                                    checked={isDismissed}
+                                    checked={employee.isDismissed}
                                     onChange={() => {
-                                        setIsDismissed(!isDismissed);
-                                        toggleIsDismissedHandler(
-                                            employee.id,
-                                            !isDismissed
+                                        dispatch(
+                                            toggleIsDismissed({
+                                                id: employee.id,
+                                                isDismissed:
+                                                    !employee.isDismissed
+                                            })
                                         );
                                     }}
                                     className="sr-only peer"
@@ -60,10 +57,15 @@ const Employee = ({
             )}
 
             <td className="border border-slate-300 bg-slate-100 leading-tight">
-                <p>{employee.dates[dateKey].daysWorkedPerMonth}</p>
-            </td>
-            <td className="border border-slate-300 bg-slate-100 leading-tight">
                 <p>{employee.dates[dateKey].hoursWorkedPerMonth}</p>
+            </td>
+
+            <td className="border border-slate-300 bg-slate-100 leading-tight">
+                <p>
+                    {employee.dates[dateKey].additionalHoursWorkedPerMonth
+                        ? employee.dates[dateKey].additionalHoursWorkedPerMonth
+                        : "0"}
+                </p>
             </td>
         </>
     );

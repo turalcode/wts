@@ -1,5 +1,6 @@
 import {createSlice} from "@reduxjs/toolkit";
 import controller from "../controller";
+import {useCheckVersion} from "../hooks/useVersion";
 
 function sortEmployees(arr) {
     arr.sort(function (a, b) {
@@ -122,6 +123,28 @@ const employeesSlice = createSlice({
                 (acc, day) => acc + month[day].hoursWorkedPerDay,
                 0
             );
+
+            // Количество часов переработки за месяц
+            if (useCheckVersion.isDayOff(key)) {
+                month.additionalHoursWorkedPerMonth = month.days.reduce(
+                    (acc, day) => {
+                        if (month[day].isDayOff) {
+                            return acc + month[day].hoursWorkedPerDay;
+                        } else if (
+                            month[day].hoursWorkedPerDay > month[day].workShift
+                        ) {
+                            return (
+                                acc +
+                                (month[day].hoursWorkedPerDay -
+                                    month[day].workShift)
+                            );
+                        } else {
+                            return acc;
+                        }
+                    },
+                    0
+                );
+            }
 
             // Количество отработанных дней за месяц
             month.daysWorkedPerMonth = month.days.filter(

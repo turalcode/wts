@@ -22,20 +22,24 @@ export const YEARS = [
 ];
 
 export const MONTHS_PARAMETERS = {
-    2024.7: {
+    ["2024.7"]: {
         workingDays: 22,
         appVersion: 1.1
     },
-    2024.8: {
-        workingDays: 21,
+    ["2024.8"]: {
+        workingDays: 22,
         appVersion: 1.1
     },
-    2024.9: {
-        workingDays: 23,
+    ["2024.9"]: {
+        workingDays: 22,
         appVersion: 1.1
     },
-    "2024.10": {
-        workingDays: 20,
+    ["2024.10"]: {
+        workingDays: 22,
+        appVersion: 1.2
+    },
+    ["2024.11"]: {
+        workingDays: 22,
         appVersion: 1.2
     }
 };

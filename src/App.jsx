@@ -46,8 +46,8 @@ Date.prototype.daysInMonth = function () {
     }
 
     month.days = Object.keys(month);
-    month.hoursWorkedPerMonth = 0; // Часы за месяц
-    month.additionalHoursWorkedPerMonth = 0; // Дополнительные часы за месяц
+    month.hoursWorkedPerMonth = 0; // Часы по графику за месяц
+    month.additionalHoursWorkedPerMonth = 0; // Часы переработки за месяц
     month.daysWorkedPerMonth = 0; // Отработанные дни за месяц
     month.salary = 0;
     return month;
