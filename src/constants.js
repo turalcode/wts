@@ -22,23 +22,71 @@ export const YEARS = [
 ];
 
 export const MONTHS_PARAMETERS = {
-    ["2024.7"]: {
+    "2024.7": {
         workingDays: 22,
         appVersion: 1.1
     },
-    ["2024.8"]: {
+    "2024.8": {
         workingDays: 22,
         appVersion: 1.1
     },
-    ["2024.9"]: {
+    "2024.9": {
         workingDays: 22,
         appVersion: 1.1
     },
-    ["2024.10"]: {
+    "2024.10": {
         workingDays: 22,
         appVersion: 1.2
     },
-    ["2024.11"]: {
+    "2024.11": {
+        workingDays: 22,
+        appVersion: 1.2
+    },
+    "2025.0": {
+        workingDays: 22,
+        appVersion: 1.2
+    },
+    "2025.1": {
+        workingDays: 22,
+        appVersion: 1.2
+    },
+    "2025.2": {
+        workingDays: 22,
+        appVersion: 1.2
+    },
+    "2025.3": {
+        workingDays: 22,
+        appVersion: 1.2
+    },
+    "2025.4": {
+        workingDays: 22,
+        appVersion: 1.2
+    },
+    "2025.5": {
+        workingDays: 22,
+        appVersion: 1.2
+    },
+    "2025.6": {
+        workingDays: 22,
+        appVersion: 1.2
+    },
+    "2025.7": {
+        workingDays: 22,
+        appVersion: 1.2
+    },
+    "2025.8": {
+        workingDays: 22,
+        appVersion: 1.2
+    },
+    "2025.9": {
+        workingDays: 22,
+        appVersion: 1.2
+    },
+    "2025.10": {
+        workingDays: 22,
+        appVersion: 1.2
+    },
+    "2025.11": {
         workingDays: 22,
         appVersion: 1.2
     }
