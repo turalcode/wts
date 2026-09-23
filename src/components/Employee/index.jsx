@@ -56,15 +56,14 @@ const Employee = ({ dateKey, employee, setWorkingDayHandler, isPrint }) => {
       )}
 
       <td className="border border-slate-300 bg-slate-100 leading-tight">
-        <p>{employee.dates[dateKey].hoursWorkedPerMonth}</p>
+        <p>
+          {(employee.dates?.[dateKey]?.hoursWorkedPerMonth ?? 0) -
+            (employee.dates?.[dateKey]?.additionalHoursWorkedPerMonth ?? 0)}
+        </p>
       </td>
 
       <td className="border border-slate-300 bg-slate-100 leading-tight">
-        <p>
-          {employee.dates[dateKey].additionalHoursWorkedPerMonth
-            ? employee.dates[dateKey].additionalHoursWorkedPerMonth
-            : "0"}
-        </p>
+        <p>{employee.dates?.[dateKey]?.additionalHoursWorkedPerMonth ?? "0"}</p>
       </td>
     </>
   );

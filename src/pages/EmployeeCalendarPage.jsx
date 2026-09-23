@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import controller from "../controller";
 import { DAYS_WEEK } from "../constants";
+import imageClock from "../../public/images/clock.png";
 
 const EmployeeCalendarPage = () => {
   const { id } = useParams();
@@ -55,18 +56,42 @@ const EmployeeCalendarPage = () => {
       setEmployee(data);
 
       const sortedKeys = sortingKeysByDate(data.dates);
-      setKeys(sortedKeys);
-      console.log(data.dates);
+      setKeys(sortedKeys.slice(0, 6));
     });
   }, []);
 
   return (
-    <div className="max-w-3xl text-base">
+    <div className="max-w-3xl text-base select-none">
       {keys &&
         Object.values(keys).map((date) => (
-          <div className="mt-5" key={date}>
-            <div className="p-3">
+          <div className="mt-12" key={date}>
+            <div className="p-3 flex justify-center">
               {getMonthName(date)} {date.slice(0, 4)}
+            </div>
+
+            <div className="grid grid-cols-2 bg-slate-100 border-t border-b border-slate-200">
+              <div className="p-3 border-r border-b border-slate-200">
+                {employee.name}
+              </div>
+
+              <div className="border-b border-slate-200"></div>
+
+              <div className="p-3 flex items-center gap-2 border-r border-slate-200">
+                <img
+                  className="size-8 bg-green-100 rounded-full"
+                  src={imageClock}
+                />
+                {(employee.dates?.[date]?.hoursWorkedPerMonth ?? 0) -
+                  (employee.dates?.[date]?.additionalHoursWorkedPerMonth ?? 0)}
+              </div>
+
+              <div className="p-3 flex items-center gap-2">
+                <img
+                  className="size-8 bg-yellow-100 rounded-full"
+                  src={imageClock}
+                />
+                {employee.dates?.[date]?.additionalHoursWorkedPerMonth ?? "0"}
+              </div>
             </div>
 
             <div className="text-center">
