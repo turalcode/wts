@@ -1,3 +1,13 @@
+export const DAYS_WEEK = {
+  monday: 0,
+  tuesday: 1,
+  wednesday: 2,
+  thursday: 3,
+  friday: 4,
+  saturday: 5,
+  sunday: 6,
+};
+
 export const MONTHS = [
   { name: "Январь", value: 0 },
   { name: "Февраль", value: 1 },
@@ -135,6 +145,54 @@ export const MONTHS_PARAMETERS = {
     appVersion: 1.2,
   },
   2026.11: {
+    workingDays: 22,
+    appVersion: 1.2,
+  },
+  "2027.0": {
+    workingDays: 22,
+    appVersion: 1.2,
+  },
+  2027.1: {
+    workingDays: 22,
+    appVersion: 1.2,
+  },
+  2027.2: {
+    workingDays: 22,
+    appVersion: 1.2,
+  },
+  2027.3: {
+    workingDays: 22,
+    appVersion: 1.2,
+  },
+  2027.4: {
+    workingDays: 22,
+    appVersion: 1.2,
+  },
+  2027.5: {
+    workingDays: 22,
+    appVersion: 1.2,
+  },
+  2027.6: {
+    workingDays: 22,
+    appVersion: 1.2,
+  },
+  2027.7: {
+    workingDays: 22,
+    appVersion: 1.2,
+  },
+  2027.8: {
+    workingDays: 22,
+    appVersion: 1.2,
+  },
+  2027.9: {
+    workingDays: 22,
+    appVersion: 1.2,
+  },
+  "2027.10": {
+    workingDays: 22,
+    appVersion: 1.2,
+  },
+  2027.11: {
     workingDays: 22,
     appVersion: 1.2,
   },
