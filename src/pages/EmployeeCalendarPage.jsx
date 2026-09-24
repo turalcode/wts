@@ -1,8 +1,9 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import controller from "../controller";
-import { DAYS_WEEK } from "../constants";
+import { DAYS_WEEK, MONTHS } from "../constants";
 import imageClock from "../../public/images/clock.png";
+import imageRuble from "../../public/images/ruble.png";
 
 const EmployeeCalendarPage = () => {
   const { id } = useParams();
@@ -38,15 +39,51 @@ const EmployeeCalendarPage = () => {
     return date.toLocaleString("en-EN", { weekday: "long" }).toLowerCase();
   }
 
-  function getMonthName(d) {
-    // Разделяем строку по точке на год и месяц
-    const [year, monthNumber] = d.split(".");
-    // Создаем объект Date (месяцы в JS нумеруются с 0, поэтому 8 — это сентябрь,
-    // передаем monthNumber - 1, а день ставим 1)
-    const date = new Date(year, monthNumber, 1);
-    // Получаем название месяца на русском языке
-    const name = date.toLocaleString("ru", { month: "long" });
-    return name.at(0).toUpperCase() + name.slice(1);
+  function modifyDate(date) {
+    if (date) {
+      const index = +date.slice(5);
+      return `${date.slice(0, 4)} - ${MONTHS[index].name}`;
+    }
+  }
+
+  function calculateSalary(month) {
+    // console.log(month.daysWorkedPerMonth);
+    console.log(month.salary);
+    // Месячная зарплата
+    let salary = 0;
+    // Сверхурочные за месяц
+    let overtime = 0;
+    // Общая сумма за месяц
+    let total = 0;
+
+    month.days.forEach((number) => {
+      const day = month[number];
+
+      if (
+        day.isWorked &&
+        month.salary > 0 &&
+        day.overtimeWork >= 0 &&
+        day.overtimeRatio > 0
+      ) {
+        // Стоимость одного часа работы
+        const costOfOneHourOfWork = month.salary;
+        // Стоимость одного часа сверхурочной работы
+        const costHourOvertimeWork = costOfOneHourOfWork * day.overtimeRatio;
+
+        // Подсчет зарплаты
+        if (day.isDayOff) {
+          overtime += costHourOvertimeWork * day.hoursWorkedPerDay;
+        } else {
+          salary +=
+            costOfOneHourOfWork * (day.hoursWorkedPerDay - day.overtimeWork);
+          overtime += costHourOvertimeWork * day.overtimeWork;
+        }
+      }
+
+      total = salary + overtime;
+    });
+
+    return total;
   }
 
   useEffect(() => {
@@ -56,7 +93,7 @@ const EmployeeCalendarPage = () => {
       setEmployee(data);
 
       const sortedKeys = sortingKeysByDate(data.dates);
-      setKeys(sortedKeys.slice(0, 6));
+      setKeys(sortedKeys.slice(0, 2));
     });
   }, []);
 
@@ -65,16 +102,17 @@ const EmployeeCalendarPage = () => {
       {keys &&
         Object.values(keys).map((date) => (
           <div className="mt-12" key={date}>
-            <div className="p-3 flex justify-center">
-              {getMonthName(date)} {date.slice(0, 4)}
-            </div>
+            <div className="p-3 flex justify-center">{modifyDate(date)}</div>
 
             <div className="grid grid-cols-2 bg-slate-100 border-t border-b border-slate-200">
               <div className="p-3 border-r border-b border-slate-200">
                 {employee.name}
               </div>
 
-              <div className="border-b border-slate-200"></div>
+              <div className="p-3 flex items-center gap-2 border-b border-slate-200">
+                <img className="size-8" src={imageRuble} />
+                {calculateSalary(employee.dates[date]).toLocaleString()}
+              </div>
 
               <div className="p-3 flex items-center gap-2 border-r border-slate-200">
                 <img

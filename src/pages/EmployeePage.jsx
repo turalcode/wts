@@ -37,7 +37,7 @@ const EmployeePage = () => {
   function salaryReportCalculation(employee) {
     // Сортировка ключей
     const keys = Object.keys(employee.dates).sort(
-      (a, b) => +b.replace(".", "") - +a.replace(".", "")
+      (a, b) => +b.replace(".", "") - +a.replace(".", ""),
     );
 
     const report = [];
@@ -140,7 +140,7 @@ const EmployeePage = () => {
         salary: +employeeSalary,
         phone,
         telegramID,
-      })
+      }),
     );
   }
 
@@ -163,7 +163,7 @@ const EmployeePage = () => {
         </fieldset>
 
         <fieldset className="ml-4 flex">
-          <label className="p-2 bg-slate-100">Оклад:</label>
+          <label className="p-2 bg-slate-100">В час:</label>
           <input
             onChange={(e) => setEmployeeSalary(e.target.value)}
             value={employeeSalary}
@@ -203,7 +203,7 @@ const EmployeePage = () => {
         </button>
       </form>
 
-      <table className="w-full text-left rtl:text-right dark:text-gray-400 text-gray-900">
+      {/* <table className="w-full text-left rtl:text-right dark:text-gray-400 text-gray-900">
         <thead className="bg-slate-100">
           <tr>
             <th scope="col" className="px-6 py-3">
@@ -251,7 +251,7 @@ const EmployeePage = () => {
             );
           })}
         </tbody>
-      </table>
+      </table> */}
     </>
   );
 };
